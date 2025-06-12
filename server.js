@@ -11,9 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// ❗ Startseite
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'startseite.html'));
+
 });
 
 app.post('/submit', async (req, res) => {
